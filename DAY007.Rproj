@@ -1,0 +1,84 @@
+# cars : 자동차의 속도와 제동거리를 가지고있는 데이터셋
+plot(cars)
+
+summary(lm(cars$speed ~ cars$dist))
+
+# 건전지의 수명이 1000시간일 때 
+x <- c(980, 1008, 968, 1032, 1012, 1002, 996, 1017, 1009)
+
+# 귀무가설 : 건전지의 수명시간은 1000시간이다.
+# 대립가설 : 건전지의 수명시간은 1000시간이 아니다.
+
+
+## 데이터의 개수가 적을 때는 정규분포인지를 검정 : shapiro-wilk 검정
+# 귀무가설 : 정규분포를 따른다.
+# 대립가설 : 정규 분포를 따르지 않는다.
+
+shapiro.test(x)
+# p-value = 0.8002 > 0.05보다 크므로 귀무가설을 채택한다. 따라서 정규분포이다. 단일표본 t검정 가능
+
+#t검정
+t.test(x, mu=1000, alternative ='two.sided')
+
+# Quetion 어떤 학습의 수학 평균성적은 55점이다. 0교시 수업을 시행하고나서 학생들의 시험성적은 다음과 같다
+score <- c(58, 49, 39, 99, 32, 88, 62, 30, 55, 65, 44, 55, 57, 53, 88, 42, 39)
+
+summary(score)
+# 0교시 수업을 시행한 후 학생들의 성적을 올랐다고 할 수 있을까?
+
+# 귀무가설 : 성적이 오르지 않았다.
+# 대립가설 : 성적이 올랐다.
+
+## 데이터의 개수가 적을 때는 정규분포인지를 검정 : shapiro-wilk 검정
+# 귀무가설 : 정규분포를 따른다.
+# 대립가설 : 정규 분포를 따르지 않는다.
+
+shapiro.test(score)
+# p-value = 0.1058 > 0.05보다 크므로 귀무가설을 채택한다. 따라서 정규분포이다. 단일표본 t검정 가능
+
+#t검정
+t.test(score, mu=55, alternative ='greater')
+# p-value = 0.4046 0.05보다 큼, 귀무가설 채택 
+# 성적이 오르지 않았다.
+
+## A학원은 성적 향샹에 도움이 될까?
+jumsu <- read.csv('C:/k_digital/source/r_source/score.csv', header=F)
+jumsu
+
+### 학원을 다니기 전의 성적
+before <- jumsu$V1
+
+### 학원을 수강한 후 성적
+after <- jumsu$V2
+
+## boxplot
+boxplot(before, after, names=c('수강전', '수강후'))
+
+mean(before)
+mean(after)
+
+# 정규분포여부 검정
+# shapiro-wilk 검정
+# 귀무가설 : 정규분포를 따른다.
+# 대립가설 : 정규 분포를 따르지 않는다.
+
+shapiro.test(before)
+shapiro.test(after)
+
+# t.test(x, y, paired=TRUE, var.equal=TRUE, alternative = 'two.sided')
+## paited = TRUE or FALSE
+# TRUE : 대응표본 , 한 집단으로부터 두번 반복해서 샘플을 추출
+# FALSE = 독립표본, 서로 독립된 두 집단으로부터 샘플을 추출
+t.test(before, after, paired = T)
+
+## var.equal = TRUE or FALSE
+### TRUE - 두 집단의 분산이 같다.
+### FALSE - 두 집단의 분산이 다르다.
+
+var.test(before, after) 
+### 귀무가설 - 두 집단의 분산이 같다.
+### 대립가설 - 두 집단의 분산이 다르다.
+
+# alternative : 양측검정과 단측검정을 설정
+### 양측검정 - 단순히 두 집단이 다르다라는 것만 확인 하는 것(two)
+### 단측검정 - 큰지 작은지까지 확인하는 것(less, greater)
